@@ -10,13 +10,11 @@ import java.util.*;
 	Map<Integer, Point2D> asteroidsMap;
 	int rightBoundaries = 20;
 	int tempRightBoundaries;
-	public int odstep;
+	public int PAUSE;
 
-  int[][]G;
-  int[][]Gpath;
+  private int[][]G;
+  private int[][]Gpath;
 
-  int[][]Manualpath;
-  PrintWriter out;
   public boolean needPaveTheTrack = false;
   public int IDAsteroidToDestroy = -1;
   public boolean isGoingToMove = false;
@@ -35,7 +33,7 @@ import java.util.*;
 
 
   boolean isThereMoreAsteroids(int x, int y){
-  for(int i =0; i< odstep; i++){
+  for(int i =0; i< PAUSE; i++){
     if(asteroidsMap.containsValue(new Point2D(x+i, y))) {return true;}
   }
   return false;
@@ -43,12 +41,7 @@ import java.util.*;
 
   
   class Navigation implements Runnable{
-    int averangeHight;
-    int numOfcolumn;
-    int numOfrow;
-    int altitute;
-
-
+    int numOfcolumn, numOfrow, altitute;
 
 	public void run(){
       numOfcolumn = enviroment.getNumberOfColumns();
@@ -56,8 +49,7 @@ import java.util.*;
       int tempRightBoundaries = rightBoundaries;
       long asteroidsMovePeriod = enviroment.getAsteroidMovePeriod();
       long shipMovePeriod = enviroment.getShipMovePeriod();
-      odstep =3;
-      averangeHight = numOfrow/2; //ew ship.getAltitude();
+      PAUSE =3;
       G=new int[numOfrow+1][numOfcolumn+1];
       Gpath = new int[numOfrow+1][numOfcolumn+1];
 
@@ -71,7 +63,6 @@ import java.util.*;
 
       while(true){
         altitute = ship.getAltitude();
-
         G=new int[numOfrow+1][numOfcolumn+1];
         Gpath = new int[numOfrow+1][numOfcolumn+1];
 
@@ -85,7 +76,6 @@ import java.util.*;
           else{
             rightBoundaries++;
               while (rightBoundaries > numOfcolumn- 12){
-
                 if(findPath(altitute, 0)){
                   createPath();
                   earlierChangeDirection();
@@ -93,44 +83,37 @@ import java.util.*;
                   rightBoundaries = tempRightBoundaries;
                   break;
                 }
-                else{
-                  rightBoundaries++;
-
-                }
+                else
+                  rightBoundaries++;  
             }
-
           }
         }
-
       }
     }
 
     public boolean findPath(int y, int x) {
-      //System.out.println("findPath y = " + y+ " x = "+x);
        if (y < 0 || y > numOfrow || x < 0 || x > numOfcolumn-rightBoundaries) {
          return false;
        }
 
          asteroidsMap = enviroment.getAsteroids();
 
-         for(int i =0; i<= odstep; i++){
+         for(int i =0; i<= PAUSE; i++){
            if(asteroidsMap.containsValue(new Point2D(x+i, y))) {
              return false;
            }
          }
       
-       if (G[y][x] == 2) return false; 
+       if (G[y][x] == 2) 
+    	   return false; 
        
        G[y][x] = 2;
        if (x == numOfcolumn-rightBoundaries) {
          return true;}
        if (findPath(y, x+1)) {return true;};
 
-
-     
          int random = 0;
          random = ((int)(10000*Math.random()) % 2);
-
          switch (random){
            case 0:
               if (findPath(y-1, x+1)) {return true;};
@@ -156,27 +139,25 @@ import java.util.*;
     }
 
 
-      public void earlierChangeDirection(){
-    int length = 0;
-    int yy = ship.getAltitude();
-
-
-    length = getLengthToChangeDirection(yy);
-    int way = getNextMoveDirection(length, yy);
-
-    if(length>odstep){
-        switch(way){
-          case 1:
-            if((yy<enviroment.getNumberOfRows()-1)  && (isAvailableNewPath(length, yy+1)))
-              changePath(length, yy+1);
-              break;
-
-          case -1:
-            if((yy>0) && (isAvailableNewPath(length, yy-1)))
-              changePath(length, yy-1);
-              break;
-        }
-    }
+    public void earlierChangeDirection(){
+	    int length = 0;
+	    int yy = ship.getAltitude();
+	    length = getLengthToChangeDirection(yy);
+	    int way = getNextMoveDirection(length, yy);
+	
+	    if(length > PAUSE){
+	        switch(way){
+	          case 1:
+	            if((yy<enviroment.getNumberOfRows()-1)  && (isAvailableNewPath(length, yy+1)))
+	              changePath(length, yy+1);
+	              break;
+	
+	          case -1:
+	            if((yy>0) && (isAvailableNewPath(length, yy-1)))
+	              changePath(length, yy-1);
+	              break;
+	        }
+	    }
 }
   private boolean isAvailableNewPath(int licznik, int yy){
     asteroidsMap = enviroment.getAsteroids();
@@ -223,14 +204,14 @@ import java.util.*;
 public void nextMove(){
   int yy = ship.getAltitude();
   if(yy<enviroment.getNumberOfRows()-1) {
-      if(Gpath[yy+1][odstep+1] == 1) changeGoingToMove(true);
+      if(Gpath[yy+1][PAUSE+1] == 1) changeGoingToMove(true);
       else changeGoingToMove(false);}
   if(yy>0){
-    if(Gpath[yy-1][odstep+1] == 1) changeGoingToMove(true);
+    if(Gpath[yy-1][PAUSE+1] == 1) changeGoingToMove(true);
     else changeGoingToMove(false);}
 
 
-  if(Gpath[yy][odstep] == 1){
+  if(Gpath[yy][PAUSE] == 1){
    try{
      Thread.sleep(enviroment.getShipMovePeriod());
    }
@@ -239,20 +220,20 @@ public void nextMove(){
    }
   }
 
-  else if((yy<enviroment.getNumberOfRows()-1) && isEmptySectionInGpath(odstep, yy+1, 1)){  //ograniczyc zeby nie szlo do gory poza mape!!!
-  changeGoingToMove(true);
-    ship.up();
-    changeGoingToMove(false);
+  else if((yy<enviroment.getNumberOfRows()-1) && isEmptySectionInGpath(PAUSE, yy+1, 1)){  //ograniczyc zeby nie szlo do gory poza mape!!!
+	  changeGoingToMove(true);
+	  ship.up();
+	  changeGoingToMove(false);
   }
 
-  else if((yy>0) && isEmptySectionInGpath(odstep, yy-1, 1)){
+  else if((yy>0) && isEmptySectionInGpath(PAUSE, yy-1, 1)){
   changeGoingToMove(true);
     ship.down();
     changeGoingToMove(false);
   }
 }
 
-  private boolean isEmptySectionInGpath(int section,int y, int value){
+  private boolean isEmptySectionInGpath(int section, int y, int value){
   for(int i =1; i<=section; i++){
       if(Gpath[y][i] != value)
         return false;
