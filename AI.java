@@ -111,14 +111,12 @@ import java.util.*;
     public boolean findPath(int y, int x) {
       //System.out.println("findPath y = " + y+ " x = "+x);
        if (y < 0 || y > numOfrow || x < 0 || x > numOfcolumn-rightBoundaries) {
-         //System.out.println("poza plansza");
          return false;
        }
 
          asteroidsMap = enviroment.getAsteroids();
 
-         for(int i =0; i<= odstep; i++){ //0, <
-           //if((it.getValue().getY() == y) && (it.getValue().getX() == x+i)){
+         for(int i =0; i<= odstep; i++){
            if(asteroidsMap.containsValue(new Point2D(x+i, y))) {
              return false;
            }
@@ -172,23 +170,16 @@ import java.util.*;
     if(length>odstep){
         switch(way){
           case 1:
-
             if((yy<enviroment.getNumberOfRows()-1)  && (isAvailableNewPath(length, yy+1)))
               changePath(length, yy+1);
               break;
 
           case -1:
-
             if((yy>0) && (isAvailableNewPath(length, yy-1)))
               changePath(length, yy-1);
               break;
-          case 0:
-            ;
-            break;
         }
     }
-
-
 }
   private boolean isAvailableNewPath(int licznik, int yy){
     asteroidsMap = enviroment.getAsteroids();
@@ -202,20 +193,19 @@ import java.util.*;
   }
 
   private void changePath(int licznik, int yy){
-        for(int j = 0; j<licznik;j++){ //-1?
+        for(int j = 0; j<licznik;j++){ 
           Gpath[yy][j] = 1;
           if(yy >0)  Gpath[yy-1][j] = 0;
-          if(yy < numOfrow -1)Gpath[yy+1][j] = 0; ////-1?
+          if(yy < numOfrow -1)Gpath[yy+1][j] = 0; 
         }
        
       }
 
       int getNextMoveDirection(int length, int y){
-        //System.out.println("l " + Gpath[y][length]);
-        //System.out.println("l+1 " + Gpath[y][length+1]);
         if(Gpath[y+1][length +1] == 1) {
 
-          return 1;}
+          return 1;
+          }
         else if(Gpath[y-1][length +1] == 1) {
           return -1;}
         else
@@ -243,9 +233,7 @@ public void nextMove(){
     else changeGoingToMove(false);}
 
 
-  if(Gpath[yy][odstep] == 1){//brak ruch
-    ;
-    //System.out.println("brak zmiany wysokosci");
+  if(Gpath[yy][odstep] == 1){
    try{
      Thread.sleep(enviroment.getShipMovePeriod());
    }
@@ -255,19 +243,15 @@ public void nextMove(){
   }
 
   else if((yy<enviroment.getNumberOfRows()-1) && isEmptySectionInGpath(odstep, yy+1, 1)){  //ograniczyc zeby nie szlo do gory poza mape!!!
-  //  System.out.println("w gore?");
   changeGoingToMove(true);
     ship.up();
     changeGoingToMove(false);
-    //System.out.println("ruch w gore");
   }
 
   else if((yy>0) && isEmptySectionInGpath(odstep, yy-1, 1)){
-  //  System.out.println("w dol?");
   changeGoingToMove(true);
     ship.down();
     changeGoingToMove(false);
-  //  System.out.println("ruch w dol");
   }
 }
 
