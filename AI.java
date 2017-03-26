@@ -5,39 +5,40 @@ import java.io.*;
 import java.util.*;
 
  class AI implements AIInterface{
-	EnvironmentalInterface enviroment;
-	ShipInterface ship;
-	Map<Integer, Point2D> asteroidsMap;
-	int rightBoundaries = 20;
-	int tempRightBoundaries;
-	public int PAUSE;
+	  EnvironmentalInterface enviroment;
+	  ShipInterface ship;
+	  Map<Integer, Point2D> asteroidsMap;
+	  int rightBoundaries = 20;
+	  int tempRightBoundaries;
+	  public int PAUSE;
 
-  private int[][]G;
-  private int[][]Gpath;
+	  private int[][]G;
+	  private int[][]Gpath;
+	
+	  public boolean needPaveTheTrack = false;
+	  public int IDAsteroidToDestroy = -1;
+	  public boolean isGoingToMove = false;
+	
+	  private synchronized void changeNeedPaveTheTrack(boolean value){
+	    this.needPaveTheTrack = value;
+	  }
+	
+	  private synchronized void changeIDAsteroidToDestroy(int value){
+	    this.IDAsteroidToDestroy = value;
+	  }
+	
+	  private synchronized void changeGoingToMove(boolean value){
+	    this.isGoingToMove = value;
+	  }
 
-  public boolean needPaveTheTrack = false;
-  public int IDAsteroidToDestroy = -1;
-  public boolean isGoingToMove = false;
 
-  private synchronized void changeNeedPaveTheTrack(boolean value){
-    this.needPaveTheTrack = value;
-  }
-
-  private synchronized void changeIDAsteroidToDestroy(int value){
-    this.IDAsteroidToDestroy = value;
-  }
-
-  private synchronized void changeGoingToMove(boolean value){
-    this.isGoingToMove = value;
-  }
-
-
-  boolean isThereMoreAsteroids(int x, int y){
-  for(int i =0; i< PAUSE; i++){
-    if(asteroidsMap.containsValue(new Point2D(x+i, y))) {return true;}
-  }
-  return false;
-  }
+	  boolean isThereMoreAsteroids(int x, int y){
+		  for(int i =0; i< PAUSE; i++){
+		    if(asteroidsMap.containsValue(new Point2D(x+i, y)))
+		    	return true;
+		  }
+	  return false;
+	  }
 
   
   class Navigation implements Runnable{
@@ -158,8 +159,9 @@ import java.util.*;
 	              break;
 	        }
 	    }
-}
-  private boolean isAvailableNewPath(int licznik, int yy){
+    }
+  
+    private boolean isAvailableNewPath(int licznik, int yy){
     asteroidsMap = enviroment.getAsteroids();
 
     for(int i =0; i<licznik; i++){
@@ -170,7 +172,7 @@ import java.util.*;
       return true;
   }
 
-  private void changePath(int licznik, int yy){
+    private void changePath(int licznik, int yy){
         for(int j = 0; j<licznik;j++){ 
           Gpath[yy][j] = 1;
           if(yy >0)  Gpath[yy-1][j] = 0;
@@ -201,54 +203,51 @@ import java.util.*;
 
 
 
-public void nextMove(){
-  int yy = ship.getAltitude();
-  if(yy<enviroment.getNumberOfRows()-1) {
-      if(Gpath[yy+1][PAUSE+1] == 1) changeGoingToMove(true);
-      else changeGoingToMove(false);}
-  if(yy>0){
-    if(Gpath[yy-1][PAUSE+1] == 1) changeGoingToMove(true);
-    else changeGoingToMove(false);}
+      public void nextMove(){
+		  int yy = ship.getAltitude();
+		  if(yy<enviroment.getNumberOfRows()-1) {
+		      if(Gpath[yy+1][PAUSE+1] == 1) changeGoingToMove(true);
+		      else changeGoingToMove(false);}
+		  if(yy>0){
+		    if(Gpath[yy-1][PAUSE+1] == 1) changeGoingToMove(true);
+		    else changeGoingToMove(false);}
+		
+		
+		  if(Gpath[yy][PAUSE] == 1){
+		   try{
+		     Thread.sleep(enviroment.getShipMovePeriod());
+		   }
+		   catch(InterruptedException e){
+			   e.printStackTrace();
+		   }
+		  }
+		
+		  else if((yy<enviroment.getNumberOfRows()-1) && isEmptySectionInGpath(PAUSE, yy+1, 1)){  //ograniczyc zeby nie szlo do gory poza mape!!!
+			  changeGoingToMove(true);
+			  ship.up();
+			  changeGoingToMove(false);
+		  }
+		
+		  else if((yy>0) && isEmptySectionInGpath(PAUSE, yy-1, 1)){
+		  changeGoingToMove(true);
+		    ship.down();
+		    changeGoingToMove(false);
+		  }
+	  }
 
-
-  if(Gpath[yy][PAUSE] == 1){
-   try{
-     Thread.sleep(enviroment.getShipMovePeriod());
-   }
-   catch(InterruptedException e){
-     System.out.println("InterruptedException");
-   }
-  }
-
-  else if((yy<enviroment.getNumberOfRows()-1) && isEmptySectionInGpath(PAUSE, yy+1, 1)){  //ograniczyc zeby nie szlo do gory poza mape!!!
-	  changeGoingToMove(true);
-	  ship.up();
-	  changeGoingToMove(false);
-  }
-
-  else if((yy>0) && isEmptySectionInGpath(PAUSE, yy-1, 1)){
-  changeGoingToMove(true);
-    ship.down();
-    changeGoingToMove(false);
-  }
-}
-
-  private boolean isEmptySectionInGpath(int section, int y, int value){
-  for(int i =1; i<=section; i++){
-      if(Gpath[y][i] != value)
-        return false;
-      else 
-    	  return true;
-    }
-  return false;
-  }
-
-
-
+	  private boolean isEmptySectionInGpath(int section, int y, int value){
+	  for(int i =1; i<=section; i++){
+	      if(Gpath[y][i] != value)
+	        return false;
+	      else 
+	    	  return true;
+	    }
+	  return false;
+	  }
 }
 
 class Shoot implements Runnable{
-  int y =0;
+  int y;
   long asteroidsMovePeriod = enviroment.getAsteroidMovePeriod();
 
    public void run (){
@@ -256,7 +255,7 @@ class Shoot implements Runnable{
       Thread.sleep(enviroment.getShipMovePeriod());
      }
      catch(InterruptedException e){
-      System.out.println("InterruptedException");
+    	 e.printStackTrace();
      }
 
 
@@ -266,7 +265,7 @@ class Shoot implements Runnable{
     			 Thread.sleep(50);
     		 }
     		 catch(InterruptedException e){
-    			 System.out.println("InterruptedException");
+    			 e.printStackTrace();
     		 }
     	 }
 
@@ -285,8 +284,8 @@ class Shoot implements Runnable{
 	}
 
 
-	public void setInterfaceToShip( ShipInterface sh ){
-		ship = sh;
+	public void setInterfaceToShip( ShipInterface ship ){
+		ship = ship;
 	}
 
 	public void start(){
