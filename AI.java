@@ -41,22 +41,19 @@ import java.util.*;
   return false;
   }
 
-  class FirstThread implements Runnable{
-
+  
+  class Navigation implements Runnable{
     int averangeHight;
     int numOfcolumn;
     int numOfrow;
-
     int altitute;
 
 
 
 	public void run(){
-
       numOfcolumn = enviroment.getNumberOfColumns();
       numOfrow = enviroment.getNumberOfRows();
       int tempRightBoundaries = rightBoundaries;
-
       long asteroidsMovePeriod = enviroment.getAsteroidMovePeriod();
       long shipMovePeriod = enviroment.getShipMovePeriod();
       odstep =3;
@@ -203,7 +200,6 @@ import java.util.*;
 
       int getNextMoveDirection(int length, int y){
         if(Gpath[y+1][length +1] == 1) {
-
           return 1;
           }
         else if(Gpath[y-1][length +1] == 1) {
@@ -216,7 +212,8 @@ import java.util.*;
         int length = 0;
         for(int i =1; i<numOfcolumn-rightBoundaries;i++){
             if(Gpath[y][i] == 1) length++;
-            else break;
+            else 
+            	return length;
         }
       return length;
       }
@@ -259,8 +256,8 @@ public void nextMove(){
   for(int i =1; i<=section; i++){
       if(Gpath[y][i] != value)
         return false;
-
-      else return true;
+      else 
+    	  return true;
     }
   return false;
   }
@@ -269,11 +266,9 @@ public void nextMove(){
 
 }
 
-class SecondThread implements Runnable{
-
+class Shoot implements Runnable{
   int y =0;
   long asteroidsMovePeriod = enviroment.getAsteroidMovePeriod();
-
 
    public void run (){
      try{
@@ -285,52 +280,40 @@ class SecondThread implements Runnable{
 
 
      while(true){
-       //asteroidsMap = enviroment.getAsteroids();
-       //y = ship.getAltitude();
-       //if(!isEscape) needPaveTheTrack = isEnoughtTimeToShoot();
-
-while(isGoingToMove){
-  try{
-   Thread.sleep(50);
-   //isGoingToMove = false;
-   //System.out.println("skończył przemieszczanie");
-  }
-  catch(InterruptedException e){
-   System.out.println("InterruptedException");
-  }
-}
+    	 while(isGoingToMove){
+    		 try{
+    			 Thread.sleep(50);
+    		 }
+    		 catch(InterruptedException e){
+    			 System.out.println("InterruptedException");
+    		 }
+    	 }
 
 
 
       if( (!(isGoingToMove)) && ship.isLaserReady()){
-      ship.shoot();
-      asteroidsMovePeriod = enviroment.getAsteroidMovePeriod();
-      if(asteroidsMovePeriod<= 300) odstep = 4;
-      if(asteroidsMovePeriod<= 200) odstep = 5;
-      if(asteroidsMovePeriod<= 170) odstep = 6;
-    
+    	  ship.shoot();
+    	  asteroidsMovePeriod = enviroment.getAsteroidMovePeriod();
       }
     }
   }
-  
-}
+ }
 
-public void setInterfaceToEnvironment( EnvironmentalInterface ei ){
-  enviroment = ei;
-}
+	public void setInterfaceToEnvironment( EnvironmentalInterface ei ){
+		enviroment = ei;
+	}
 
 
-public void setInterfaceToShip( ShipInterface sh ){
-  ship = sh;
-}
+	public void setInterfaceToShip( ShipInterface sh ){
+		ship = sh;
+	}
 
-public void start(){
-  FirstThread f1 = new FirstThread();
-  SecondThread s1 = new SecondThread();
-  Thread t1 = new Thread( f1 );
-  Thread t2 = new Thread( s1 );
-  t1.start();
-  t2.start();
-}
-
+	public void start(){
+		Navigation f1 = new Navigation();
+		Shoot s1 = new Shoot();
+		Thread t1 = new Thread( f1 );
+		Thread t2 = new Thread( s1 );
+		t1.start();
+		t2.start();
+	}
 }
