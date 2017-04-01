@@ -6,4 +6,4 @@ Co pewien czas ma możliwość oddania strzału i zniszczenia jednego obiektu na
 
 Nie umieszczam interfejsu gry, gdyż do jej samej nie mam upoważnienia na publikację.
 
-https://cloud.githubusercontent.com/assets/8524812/24576906/8e7d5c60-16c4-11e7-93eb-5672e24f20da.PNG
+[URL]https://cloud.githubusercontent.com/assets/8524812/24576906/8e7d5c60-16c4-11e7-93eb-5672e24f20da.PNG[/URL]
