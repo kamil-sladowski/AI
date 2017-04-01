@@ -6,7 +6,9 @@ Co pewien czas ma możliwość oddania strzału i zniszczenia jednego obiektu na
 
 Nie umieszczam interfejsu gry, gdyż do jej samej nie mam upoważnienia na publikację.
 
+
 Przykładowe screeny:
+
 https://cloud.githubusercontent.com/assets/8524812/24576906/8e7d5c60-16c4-11e7-93eb-5672e24f20da.PNG 
 https://cloud.githubusercontent.com/assets/8524812/24576909/92da4548-16c4-11e7-8697-7ed9ed9a97e4.PNG
 https://cloud.githubusercontent.com/assets/8524812/24576911/943641c6-16c4-11e7-9065-25662d543868.PNG
