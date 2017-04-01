@@ -1,7 +1,9 @@
 # AI
 
-Sztuczna inteligencja steruj¹ca statkiem w grze.
-Gracz-komputer analizuje trasê szukaj¹c przejœcia miêdzy nadlatuj¹cymi asteroidami, które z czasem poruszaj¹ siê coraz szybciej.
-Co pewien czas ma mo¿liwoœæ oddania strza³u i zniszczenia jednego obiektu na trasie.
+Sztuczna inteligencja sterujÄ…ca statkiem w grze.
+Gracz-komputer analizuje trasÄ™ szukajÄ…c przejÅ›cia miÄ™dzy nadlatujÄ…cymi asteroidami, ktÃ³re z czasem poruszajÄ… siÄ™ coraz szybciej.
+Co pewien czas ma moÅ¼liwoÅ›Ä‡ oddania strzaÅ‚u i zniszczenia jednego obiektu na trasie.
 
-Nie umieszczam interfejsu gry, gdy¿ do jej samej nie mam upowa¿nienia na publikacjê.
+Nie umieszczam interfejsu gry, gdyÅ¼ do jej samej nie mam upowaÅ¼nienia na publikacjÄ™.
+
+https://cloud.githubusercontent.com/assets/8524812/24576906/8e7d5c60-16c4-11e7-93eb-5672e24f20da.PNG
